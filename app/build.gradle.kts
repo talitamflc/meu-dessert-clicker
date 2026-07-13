@@ -63,6 +63,8 @@ android {
     }
 }
 
+val lifecycleVersion = "2.5.1"
+
 dependencies {
 
     implementation(platform("androidx.compose:compose-bom:2024.12.01"))
@@ -73,6 +75,8 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.core:core-ktx:1.15.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:${lifecycleVersion}")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
 
     debugImplementation("androidx.compose.ui:ui-test-manifest")
     debugImplementation("androidx.compose.ui:ui-tooling")
