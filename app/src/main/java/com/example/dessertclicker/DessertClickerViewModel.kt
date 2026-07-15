@@ -1,6 +1,7 @@
 package com.example.dessertclicker
 
 import androidx.lifecycle.ViewModel
+import com.example.dessertclicker.model.Dessert
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -11,7 +12,7 @@ class DessertClickerViewModel : ViewModel() {
 
     val uiState: StateFlow<DessertUiState> = _uiState.asStateFlow()
 
-    val dessertUiStateLists = listOf(  //precisa alterar os nomes ainda/ajeitar a lista
+    val dessertList = listOf(
         Dessert(R.drawable.cupcake, 5, 0),
         Dessert(R.drawable.donut, 10, 5),
         Dessert(R.drawable.eclair, 15, 20),
@@ -28,11 +29,11 @@ class DessertClickerViewModel : ViewModel() {
     )
 
     fun determineDessertToShow(
-        dessertUiStates: List<Dessert>,
+        desserts: List<Dessert>,
         dessertsSold: Int
     ): Dessert {
-        var dessertToShow = dessertUiStates.first()
-        for (dessert in dessertUiStates) {
+        var dessertToShow = desserts.first()
+        for (dessert in desserts) {
             if (dessertsSold >= dessert.startProductionAmount) {
                 dessertToShow = dessert
             } else {
@@ -47,4 +48,20 @@ class DessertClickerViewModel : ViewModel() {
         return dessertToShow
     }
 
+    fun onDessertClicked() {
+        val currentState = _uiState.value
+
+        val currentRevenue = currentState.revenue + currentState.currentDessertPrice
+        val currentDessertsSold = currentState.dessertSold + 1
+
+        val dessertToShow = determineDessertToShow(dessertList, currentDessertsSold)
+
+        _uiState.value = DessertUiState(
+            revenue = currentRevenue,
+            dessertSold = currentDessertsSold,
+            currentDessertImageId = dessertToShow.imageId,
+            currentDessertPrice = dessertToShow.price,
+            currentDessertIndex = currentState.currentDessertIndex
+        )
+    }
 }
