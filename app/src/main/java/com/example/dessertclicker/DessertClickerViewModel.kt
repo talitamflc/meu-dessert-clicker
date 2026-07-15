@@ -49,14 +49,16 @@ class DessertClickerViewModel : ViewModel() {
     }
 
     fun onDessertClicked() {
-        val currentState = _uiState.value
+        val currentState = _uiState.value  // estado atual da tela, antes do clique
+
 
         val currentRevenue = currentState.revenue + currentState.currentDessertPrice
         val currentDessertsSold = currentState.dessertSold + 1
 
         val dessertToShow = determineDessertToShow(dessertList, currentDessertsSold)
 
-        _uiState.value = DessertUiState(
+
+        _uiState.value = currentState.copy(
             revenue = currentRevenue,
             dessertSold = currentDessertsSold,
             currentDessertImageId = dessertToShow.imageId,

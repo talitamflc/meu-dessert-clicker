@@ -181,8 +181,8 @@ private fun DessertClickerApp(
                 onShareButtonClicked = {
                     shareSoldDessertsInformation(
                         intentContext = intentContext,
-                        dessertsSold = dessertsSold,
-                        revenue = revenue
+                        dessertsSold = dessertsSold,  // valor atual, chamar de UiState?
+                        revenue = revenue   // valor atual, chamar de UiState?
                     )
                 },
                 modifier = Modifier
@@ -198,6 +198,7 @@ private fun DessertClickerApp(
         }
     ) { contentPadding ->
         /*TODO: Próximos passos*/
+        //atualizar com estados de UiState?
         DessertClickerScreen(
             revenue = revenue,
             dessertsSold = dessertsSold,
@@ -267,6 +268,7 @@ fun DessertClickerScreen(
                     contentScale = ContentScale.Crop,
                 )
             }
+            // add o estado de UiState?
             TransactionInfo(
                 revenue = revenue,
                 dessertsSold = dessertsSold,
@@ -283,13 +285,13 @@ private fun TransactionInfo(
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
-        DessertsSoldInfo(
+        DessertsSoldInfo(  // mostra qtos doces foram vendidos
             dessertsSold = dessertsSold,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(dimensionResource(R.dimen.padding_medium))
         )
-        RevenueInfo(
+        RevenueInfo(  //mostra a receita total
             revenue = revenue,
             modifier = Modifier
                 .fillMaxWidth()
@@ -298,7 +300,7 @@ private fun TransactionInfo(
     }
 }
 
-@Composable
+@Composable   //mostra a receita total
 private fun RevenueInfo(revenue: Int, modifier: Modifier = Modifier) {
     Row(
         modifier = modifier,
@@ -309,7 +311,7 @@ private fun RevenueInfo(revenue: Int, modifier: Modifier = Modifier) {
             style = MaterialTheme.typography.headlineMedium,
             color = MaterialTheme.colorScheme.onSecondaryContainer
         )
-        Text(
+        Text(  //UiState?
             text = "$${revenue}",
             textAlign = TextAlign.Right,
             style = MaterialTheme.typography.headlineMedium,
@@ -318,7 +320,7 @@ private fun RevenueInfo(revenue: Int, modifier: Modifier = Modifier) {
     }
 }
 
-@Composable
+@Composable  //mostra quantos doces foram vendidos
 private fun DessertsSoldInfo(dessertsSold: Int, modifier: Modifier = Modifier) {
     Row(
         modifier = modifier,
