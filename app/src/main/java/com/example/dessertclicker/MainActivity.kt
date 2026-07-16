@@ -16,12 +16,8 @@
 
 package com.example.dessertclicker
 
-import android.content.ActivityNotFoundException
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -53,10 +49,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -67,7 +59,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.core.content.ContextCompat
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.dessertclicker.model.Dessert
 import com.example.dessertclicker.ui.theme.DessertClickerTheme
 
@@ -132,46 +124,14 @@ class MainActivity : ComponentActivity() {
 /**
  * Share desserts sold information using ACTION_SEND intent
  */
-private fun shareSoldDessertsInformation(intentContext: Context, dessertsSold: Int, revenue: Int) {
-    val sendIntent = Intent().apply {
-        action = Intent.ACTION_SEND
-        putExtra(
-            Intent.EXTRA_TEXT,
-            intentContext.getString(R.string.share_text, dessertsSold, revenue)
-        )
-        type = "text/plain"
-    }
 
-    val shareIntent = Intent.createChooser(sendIntent, null)
-
-    try {
-        ContextCompat.startActivity(intentContext, shareIntent, null)
-    } catch (e: ActivityNotFoundException) {
-        Toast.makeText(
-            intentContext,
-            intentContext.getString(R.string.sharing_not_available),
-            Toast.LENGTH_LONG
-        ).show()
-    }
-}
+//removido para a MainActivity- private fun shareSoldDessertsInformation()
 
 @Composable
 private fun DessertClickerApp(
+    dessertClickerViewModel: DessertClickerViewModel = viewModel(),
     dessert: List<Dessert>
 ) {
-
-    var revenue by rememberSaveable { mutableStateOf(0) }
-    var dessertsSold by rememberSaveable { mutableStateOf(0) }
-
-    val currentDessertIndex by rememberSaveable { mutableStateOf(0) }
-
-    //todo: proximos passos
-    var currentDessertPrice by rememberSaveable {
-        mutableStateOf(dessert[currentDessertIndex])
-    }
-    var currentDessertImageId by rememberSaveable {
-        mutableStateOf(dessert[currentDessertIndex])
-    }
 
     Scaffold(
         topBar = {
@@ -179,11 +139,12 @@ private fun DessertClickerApp(
             val layoutDirection = LocalLayoutDirection.current
             DessertClickerAppBar(
                 onShareButtonClicked = {
-                    shareSoldDessertsInformation(
-                        intentContext = intentContext,
-                        dessertsSold = dessertsSold,  // valor atual, chamar de UiState?
-                        revenue = revenue   // valor atual, chamar de UiState?
-                    )
+                    //chamar da VM
+//                    shareSoldDessertsInformation(
+//                        intentContext = intentContext,
+//                        dessertsSold = dessertsSold,  // valor atual, chamar de UiState?
+//                        revenue = revenue   // valor atual, chamar de UiState?
+//                    )
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -200,8 +161,8 @@ private fun DessertClickerApp(
         /*TODO: Próximos passos*/
         //atualizar com estados de UiState?
         DessertClickerScreen(
-            revenue = revenue,
-            dessertsSold = dessertsSold,
+            revenue = 0,
+            dessertsSold = 0,
             dessertImageId = 0,
             modifier = Modifier.padding(contentPadding)
         )
