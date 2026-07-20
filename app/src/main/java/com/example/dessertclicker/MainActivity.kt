@@ -49,6 +49,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -60,7 +62,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.dessertclicker.model.Dessert
 import com.example.dessertclicker.ui.theme.DessertClickerTheme
 
 // Tag for logging
@@ -79,7 +80,7 @@ class MainActivity : ComponentActivity() {
                         .fillMaxSize()
                         .statusBarsPadding(),
                 ) {
-                    /* TODO: Próximos passos */
+                    DessertClickerApp()
                 }
             }
         }
@@ -125,13 +126,14 @@ class MainActivity : ComponentActivity() {
  * Share desserts sold information using ACTION_SEND intent
  */
 
-//removido para a MainActivity- private fun shareSoldDessertsInformation()
+
 
 @Composable
 private fun DessertClickerApp(
-    dessertClickerViewModel: DessertClickerViewModel = viewModel(),
-    dessert: List<Dessert>
+    dessertClickerViewModel: DessertClickerViewModel = viewModel()
 ) {
+
+    val dessertUiState by dessertClickerViewModel.uiState.collectAsState()
 
     Scaffold(
         topBar = {
@@ -139,12 +141,11 @@ private fun DessertClickerApp(
             val layoutDirection = LocalLayoutDirection.current
             DessertClickerAppBar(
                 onShareButtonClicked = {
-                    //chamar da VM
-//                    shareSoldDessertsInformation(
-//                        intentContext = intentContext,
-//                        dessertsSold = dessertsSold,  // valor atual, chamar de UiState?
-//                        revenue = revenue   // valor atual, chamar de UiState?
-//                    )
+                    dessertClickerViewModel.shareSoldDessertsInformation(
+                        intentContext = intentContext,
+                        dessertsSold = dessertUiState.dessertSold,
+                        revenue = dessertUiState.revenue
+                    )
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -158,12 +159,11 @@ private fun DessertClickerApp(
             )
         }
     ) { contentPadding ->
-        /*TODO: Próximos passos*/
-        //atualizar com estados de UiState?
         DessertClickerScreen(
-            revenue = 0,
-            dessertsSold = 0,
-            dessertImageId = 0,
+            revenue = dessertUiState.revenue,
+            dessertsSold = dessertUiState.dessertSold,
+            dessertImageId = dessertUiState.currentDessertImageId,
+            onDessertClicked = { dessertClickerViewModel.onDessertClicked() },
             modifier = Modifier.padding(contentPadding)
         )
     }
@@ -198,12 +198,13 @@ private fun DessertClickerAppBar(
     }
 }
 
-/*TODO: Próximos passos*/
+
 @Composable
 fun DessertClickerScreen(
     revenue: Int,
     dessertsSold: Int,
     @DrawableRes dessertImageId: Int,
+    onDessertClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier) {
@@ -225,11 +226,10 @@ fun DessertClickerScreen(
                         .width(dimensionResource(R.dimen.image_size))
                         .height(dimensionResource(R.dimen.image_size))
                         .align(Alignment.Center)
-                        .clickable { /*todo chamar a onDessertClicked*/ },
+                        .clickable { onDessertClicked() },
                     contentScale = ContentScale.Crop,
                 )
             }
-            // add o estado de UiState?
             TransactionInfo(
                 revenue = revenue,
                 dessertsSold = dessertsSold,
@@ -272,7 +272,7 @@ private fun RevenueInfo(revenue: Int, modifier: Modifier = Modifier) {
             style = MaterialTheme.typography.headlineMedium,
             color = MaterialTheme.colorScheme.onSecondaryContainer
         )
-        Text(  //UiState?
+        Text(
             text = "$${revenue}",
             textAlign = TextAlign.Right,
             style = MaterialTheme.typography.headlineMedium,
@@ -304,6 +304,6 @@ private fun DessertsSoldInfo(dessertsSold: Int, modifier: Modifier = Modifier) {
 @Composable
 fun MyDessertClickerAppPreview() {
     DessertClickerTheme {
-       //todo: DessertClickerApp()
+       DessertClickerApp()
     }
 }

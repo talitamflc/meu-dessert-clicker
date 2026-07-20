@@ -72,7 +72,7 @@ class DessertClickerViewModel : ViewModel() {
         )
     }
 
-    private fun shareSoldDessertsInformation(intentContext: Context, dessertsSold: Int, revenue: Int) {
+    fun shareSoldDessertsInformation(intentContext: Context, dessertsSold: Int, revenue: Int) {
         val sendIntent = Intent().apply {
             action = Intent.ACTION_SEND
             putExtra(
