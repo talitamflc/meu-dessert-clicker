@@ -53,10 +53,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -68,7 +66,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.content.ContextCompat
-import com.example.dessertclicker.model.Dessert
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.dessertclicker.ui.theme.DessertClickerTheme
 
 // Tag for logging
@@ -87,7 +85,7 @@ class MainActivity : ComponentActivity() {
                         .fillMaxSize()
                         .statusBarsPadding(),
                 ) {
-                    /* TODO: Próximos passos */
+                    DessertClickerApp()
                 }
             }
         }
@@ -132,6 +130,8 @@ class MainActivity : ComponentActivity() {
 /**
  * Share desserts sold information using ACTION_SEND intent
  */
+
+
 private fun shareSoldDessertsInformation(intentContext: Context, dessertsSold: Int, revenue: Int) {
     val sendIntent = Intent().apply {
         action = Intent.ACTION_SEND
@@ -157,21 +157,10 @@ private fun shareSoldDessertsInformation(intentContext: Context, dessertsSold: I
 
 @Composable
 private fun DessertClickerApp(
-    dessert: List<Dessert>
+    dessertClickerViewModel: DessertClickerViewModel = viewModel()
 ) {
 
-    var revenue by rememberSaveable { mutableStateOf(0) }
-    var dessertsSold by rememberSaveable { mutableStateOf(0) }
-
-    val currentDessertIndex by rememberSaveable { mutableStateOf(0) }
-
-    //todo: proximos passos
-    var currentDessertPrice by rememberSaveable {
-        mutableStateOf(dessert[currentDessertIndex])
-    }
-    var currentDessertImageId by rememberSaveable {
-        mutableStateOf(dessert[currentDessertIndex])
-    }
+    val dessertUiState by dessertClickerViewModel.uiState.collectAsState()
 
     Scaffold(
         topBar = {
@@ -181,8 +170,8 @@ private fun DessertClickerApp(
                 onShareButtonClicked = {
                     shareSoldDessertsInformation(
                         intentContext = intentContext,
-                        dessertsSold = dessertsSold,  // valor atual, chamar de UiState?
-                        revenue = revenue   // valor atual, chamar de UiState?
+                        dessertsSold = dessertUiState.dessertSold,
+                        revenue = dessertUiState.revenue
                     )
                 },
                 modifier = Modifier
@@ -197,12 +186,11 @@ private fun DessertClickerApp(
             )
         }
     ) { contentPadding ->
-        /*TODO: Próximos passos*/
-        //atualizar com estados de UiState?
         DessertClickerScreen(
-            revenue = revenue,
-            dessertsSold = dessertsSold,
-            dessertImageId = 0,
+            revenue = dessertUiState.revenue,
+            dessertsSold = dessertUiState.dessertSold,
+            dessertImageId = dessertUiState.currentDessertImageId,
+            onDessertClicked = { dessertClickerViewModel.onDessertClicked() },
             modifier = Modifier.padding(contentPadding)
         )
     }
@@ -237,12 +225,13 @@ private fun DessertClickerAppBar(
     }
 }
 
-/*TODO: Próximos passos*/
+
 @Composable
 fun DessertClickerScreen(
     revenue: Int,
     dessertsSold: Int,
     @DrawableRes dessertImageId: Int,
+    onDessertClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier) {
@@ -264,11 +253,10 @@ fun DessertClickerScreen(
                         .width(dimensionResource(R.dimen.image_size))
                         .height(dimensionResource(R.dimen.image_size))
                         .align(Alignment.Center)
-                        .clickable { /*todo chamar a onDessertClicked*/ },
+                        .clickable { onDessertClicked() },
                     contentScale = ContentScale.Crop,
                 )
             }
-            // add o estado de UiState?
             TransactionInfo(
                 revenue = revenue,
                 dessertsSold = dessertsSold,
@@ -311,7 +299,7 @@ private fun RevenueInfo(revenue: Int, modifier: Modifier = Modifier) {
             style = MaterialTheme.typography.headlineMedium,
             color = MaterialTheme.colorScheme.onSecondaryContainer
         )
-        Text(  //UiState?
+        Text(
             text = "$${revenue}",
             textAlign = TextAlign.Right,
             style = MaterialTheme.typography.headlineMedium,
@@ -343,6 +331,6 @@ private fun DessertsSoldInfo(dessertsSold: Int, modifier: Modifier = Modifier) {
 @Composable
 fun MyDessertClickerAppPreview() {
     DessertClickerTheme {
-       //todo: DessertClickerApp()
+       DessertClickerApp()
     }
 }
