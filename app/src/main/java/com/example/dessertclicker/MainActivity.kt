@@ -273,13 +273,13 @@ private fun TransactionInfo(
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
-        DessertsSoldInfo(  // mostra qtos doces foram vendidos
+        DessertsSoldInfo(
             dessertsSold = dessertsSold,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(dimensionResource(R.dimen.padding_medium))
         )
-        RevenueInfo(  //mostra a receita total
+        RevenueInfo(
             revenue = revenue,
             modifier = Modifier
                 .fillMaxWidth()
@@ -288,7 +288,7 @@ private fun TransactionInfo(
     }
 }
 
-@Composable   //mostra a receita total
+@Composable
 private fun RevenueInfo(revenue: Int, modifier: Modifier = Modifier) {
     Row(
         modifier = modifier,
@@ -308,7 +308,7 @@ private fun RevenueInfo(revenue: Int, modifier: Modifier = Modifier) {
     }
 }
 
-@Composable  //mostra quantos doces foram vendidos
+@Composable
 private fun DessertsSoldInfo(dessertsSold: Int, modifier: Modifier = Modifier) {
     Row(
         modifier = modifier,

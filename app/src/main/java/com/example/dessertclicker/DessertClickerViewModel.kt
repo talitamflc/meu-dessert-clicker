@@ -28,6 +28,11 @@ class DessertClickerViewModel : ViewModel() {
         Dessert(R.drawable.oreo, 6000, 20000)
     )
 
+    init {
+        val initialDessert = dessertList.first()
+        _uiState.value = _uiState.value.copy(currentDessertImageId = initialDessert.imageId,currentDessertPrice = initialDessert.price)
+
+    }
     fun determineDessertToShow(
         desserts: List<Dessert>,
         dessertsSold: Int
@@ -37,10 +42,6 @@ class DessertClickerViewModel : ViewModel() {
             if (dessertsSold >= dessert.startProductionAmount) {
                 dessertToShow = dessert
             } else {
-                // The list of desserts is sorted by startProductionAmount. As you sell more desserts,
-                // you'll start producing more expensive desserts as determined by startProductionAmount
-                // We know to break as soon as we see a dessert who's "startProductionAmount" is greater
-                // than the amount sold.
                 break
             }
         }
